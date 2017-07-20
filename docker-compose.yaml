@@ -23,8 +23,8 @@ services:
     command: orderer
     volumes:
     - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-    - ./crypto-config/ordererOrganizations/example.com/orderers/testing_orderer.example.com/msp:/var/hyperledger/orderer/msp
-    - ./crypto-config/ordererOrganizations/example.com/orderers/testing_orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
     ports:
       - 7050:7050
     deploy:

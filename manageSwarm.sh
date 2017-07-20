@@ -8,7 +8,7 @@ function printHelp {
     echo "swarm-up and swarm-down respectively initiate the swarm or removes it"
 }
 
-function swarm-init {
+function swarm-up {
 
     echo
     echo
@@ -53,8 +53,8 @@ function init {
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
-            scp -r ./crypto-config "$i":~/hyperledger/testing/
-            scp -r ./channel-artifacts/ "$i":~/hyperledger/testing/
+            scp -r ./crypto-config "$i":~/hyperledgerBenchmark
+            scp -r ./channel-artifacts/ "$i":~/hyperledgerBenchmark
     else
      	echo "$?  - $i is down"
     fi
@@ -79,7 +79,7 @@ function start {
 
 function stop {
     echo "------------ Stopping hyperledger --------------"
-    docker service rm hyper_peer0 hyper_peer1 hyper_peer2 hyper_orderer 
+    docker service rm hyper_peer0 hyper_orderer 
     CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
     echo $CHAINCONTAINERS
     CHAINIMAGES=$(docker images *chaincode* -q)
@@ -104,7 +104,7 @@ function terminate {
     echo
     echo
 
-    docker service rm hyper_peer0 hyper_peer1 hyper_peer2 hyper_orderer 
+    docker service rm hyper_peer0 hyper_orderer 
     CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
     echo $CHAINCONTAINERS
     CHAINIMAGES=$(docker images *chaincode* -q)
@@ -122,7 +122,7 @@ function terminate {
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
-        ssh "$i" 'rm -r hyperledger/testing/crypto-config hyperledger/testing/channel-artifacts'
+        ssh "$i" 'rm -r hyperledgerBenchmark/crypto-config hyperledgerBenchmark/channel-artifacts'
     else
         echo "$? - $i is down"
     fi
@@ -149,7 +149,7 @@ function swarm-down {
     docker swarm leave --force
 }
 
-if [ "$COMMAND" = 'swarm-init' ];then
+if [ "$COMMAND" = 'swarm-up' ];then
 	swarm-up
 elif [ "$COMMAND" = 'up' ];then
 	init
