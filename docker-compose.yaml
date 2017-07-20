@@ -7,7 +7,7 @@ version: '3.2'
 services:
   
   orderer:
-    image: hyperledger/fabric-orderer:x86_64-1.0.0-rc1
+    image: hyperledger/fabric-orderer:x86_64-1.0.0
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -22,25 +22,25 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
-    - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-    - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/crypto-config/ordererOrganizations/example.com/orderers/testing_orderer.example.com/msp:/var/hyperledger/orderer/msp
-    - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/crypto-config/ordererOrganizations/example.com/orderers/testing_orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ./crypto-config/ordererOrganizations/example.com/orderers/testing_orderer.example.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/example.com/orderers/testing_orderer.example.com/tls/:/var/hyperledger/orderer/tls
     ports:
-      - 8050:7050
+      - 7050:7050
     deploy:
       placement:
         constraints:
           - node.role==manager
     networks:
-      testing_sunchain_default:
+      hyper_default:
         aliases:
-          - testing_orderer.example.com
+          - orderer.example.com
 
   peer0:
-    image: hyperledger/fabric-peer:x86_64-1.0.0-rc1
+    image: hyperledger/fabric-peer:x86_64-1.0.0
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=testing_sunchain_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyper_default
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_ENDORSER_ENABLED=true
@@ -58,99 +58,24 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     volumes:
       - /var/run/:/host/var/run/
-      - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp
-      - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
     ports:
-      - 8051:7051
-      - 8053:7053
+      - 7051:7051
+      - 7053:7053
     deploy:
       placement:
         constraints:
           - node.role==manager
     networks:
-      testing_sunchain_default:
+      hyper_default:
         aliases:
           - peer0.org1.example.com
- 
-  peer1:
-    image: hyperledger/fabric-peer:x86_64-1.0.0-rc1
-    environment:
-      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=testing_sunchain_default
-      - CORE_LOGGING_LEVEL=DEBUG
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_ENDORSER_ENABLED=true
-      - CORE_PEER_GOSSIP_USELEADERELECTION=true
-      - CORE_PEER_GOSSIP_ORGLEADER=false
-      - CORE_PEER_PROFILE_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_PEER_ID=peer1
-      - CORE_PEER_ADDRESS=peer1:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: peer node start
-    volumes:
-      - /var/run/:/host/var/run/
-      - /home/sun/hyperledger/testing/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/fabric/msp
-      - /home/sun/hyperledger/testing/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/fabric/tls
-    ports:
-      - 8054:7051
-      - 8057:7053
-    deploy:
-      placement:
-        constraints:
-          - node.hostname==ec2
-    networks:
-      testing_sunchain_default:
-        aliases:
-          - peer1.org1example.com
-  
-  peer2:
-    image: hyperledger/fabric-peer:x86_64-1.0.0-rc1
-    environment:
-      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=testing_sunchain_default
-      - CORE_LOGGING_LEVEL=DEBUG
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_ENDORSER_ENABLED=true
-      - CORE_PEER_GOSSIP_USELEADERELECTION=true
-      - CORE_PEER_GOSSIP_ORGLEADER=false
-      - CORE_PEER_PROFILE_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_PEER_ID=peer2
-      - CORE_PEER_ADDRESS=peer2:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: peer node start
-    volumes:
-      - /var/run/:/host/var/run/
-      - /home/sun/hyperledger/testing/crypto-config/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/msp:/etc/hyperledger/fabric/msp
-      - /home/sun/hyperledger/testing/crypto-config/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls:/etc/hyperledger/fabric/tls
-    ports:
-      - 8061:7051
-      - 8063:7053
-    deploy:
-      placement:
-        constraints:
-          - node.hostname==ec3
-    networks:
-      testing_sunchain_default:
-        aliases:
-          - peer2.org1.example.com
-
   cli:
-    image: hyperledger/fabric-tools:x86_64-1.0.0-rc1
+    image: hyperledger/fabric-tools:x86_64-1.0.0
     tty: true
     environment:
-      - CHANNEL_NAME=sunchain
+      - CHANNEL_NAME=mychannel
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
@@ -165,24 +90,21 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     volumes:
         - /var/run/:/host/var/run/
-        - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/chaincode:/opt/gopath/src/github.com/hyperledger/fabric/peer/sunchaincode/
-        - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-        - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
-        - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/serverConfig/script:/opt/gopath/src/github.com/hyperledger/fabric/peer/script
-        - /home/sun/go/src/code.tuxago.com/talium/sunchain/hyperledger/sunchain:/opt/gopath/src/code.tuxago.com/talium/sunchain/hyperledger/sunchain
+        - ./chaincode:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode/
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+        - ./script:/opt/gopath/src/github.com/hyperledger/fabric/peer/script
     depends_on:
       - orderer
       - peer0
-      - peer1
-      - peer2 
     deploy:
       placement:
         constraints:
           - node.role==manager
     networks:
-      - testing_sunchain_default
+      - hyper_default
  
 networks:
-  testing_sunchain_default:
+  hyper_default:
     external: true
  

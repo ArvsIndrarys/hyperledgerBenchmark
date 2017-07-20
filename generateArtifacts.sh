@@ -1,7 +1,7 @@
 #!/bin/bash +x
 
 CHANNEL_NAME=$1
-: ${CHANNEL_NAME:="sunchain"}
+: ${CHANNEL_NAME:="mychannel"}
 export FABRIC_CFG_PATH=$PWD
 mkdir -p channel-artifacts
 echo

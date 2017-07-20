@@ -20,7 +20,7 @@ function swarm-init {
     sed -i '1,4d' ./joinCommand && sed -i '4,7d' ./joinCommand
     chmod a+x ./joinCommand
 
-    for i in {ec2,ec3}; do
+    for i in {node0,node1,node2,node3,node4,node6}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -49,7 +49,7 @@ function init {
     echo
 
     ./generateArtifacts.sh
-    for i in {ec2,ec3}; do
+    for i in {node0,node1,node2,node3,node4,node6}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -61,34 +61,34 @@ function init {
     done
 
     echo "------------- Deploying hyperledger ------------"
-    docker network create --driver=overlay --attachable testing_sunchain_default
-    docker stack deploy -c docker-compose.yaml testing_sunchain 	
+    docker network create --driver=overlay --attachable hyper_default
+    docker stack deploy -c docker-compose.yaml hyper 	
     sleep 1
-    docker exec -it $(docker ps -f name=testing_sunchain_cli --format "{{ .Names }}") './script/script.sh'
-    docker service rm testing_sunchain_cli 
+    docker exec -it $(docker ps -f name=hyper_cli --format "{{ .Names }}") './script/script.sh'
+    docker service rm hyper_cli 
 }
 
 function start {
     echo "------------- Deploying hyperledger ------------"
-    docker network create --driver=overlay --attachable testing_sunchain_default
-    docker stack deploy -c docker-compose.yaml testing_sunchain
+    docker network create --driver=overlay --attachable hyper_default
+    docker stack deploy -c docker-compose.yaml hyper
     sleep 1
-    docker exec -it $(docker ps -f name=testing_sunchain_cli --format "{{ .Names }}") './script/script.sh' 
-    docker service rm testing_sunchain_cli 
+    docker exec -it $(docker ps -f name=hyper_cli --format "{{ .Names }}") './script/script.sh' 
+    docker service rm hyper_cli 
 }
 
 function stop {
     echo "------------ Stopping hyperledger --------------"
-    docker service rm testing_sunchain_peer0 testing_sunchain_peer1 testing_sunchain_peer2 testing_sunchain_orderer 
-    CHAINCONTAINERS=$(docker ps -f name=sunchaincode --format "{{ .Names }}")
+    docker service rm hyper_peer0 hyper_peer1 hyper_peer2 hyper_orderer 
+    CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
     echo $CHAINCONTAINERS
-    CHAINIMAGES=$(docker images *sunchaincode* -q)
+    CHAINIMAGES=$(docker images *chaincode* -q)
     echo $CHAINIMAGES
     if [[ $CHAINCONTAINERS ]];then
-    	docker rm -f $(docker ps -f name=sunchaincode --format "{{ .Names }}")
+    	docker rm -f $(docker ps -f name=chaincode --format "{{ .Names }}")
     fi
     if [[  $CHAINIMAGES ]];then
-    	docker rmi -f $(docker images *sunchaincode* -q)
+    	docker rmi -f $(docker images *chaincode* -q)
     fi
     docker network prune -f
     docker volume prune -f
@@ -104,21 +104,21 @@ function terminate {
     echo
     echo
 
-    docker service rm testing_sunchain_peer0 testing_sunchain_peer1 testing_sunchain_peer2 testing_sunchain_orderer 
-    CHAINCONTAINERS=$(docker ps -f name=sunchaincode --format "{{ .Names }}")
+    docker service rm hyper_peer0 hyper_peer1 hyper_peer2 hyper_orderer 
+    CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
     echo $CHAINCONTAINERS
-    CHAINIMAGES=$(docker images *sunchaincode* -q)
+    CHAINIMAGES=$(docker images *chaincode* -q)
     echo $CHAINIMAGES
     if [[ $CHAINCONTAINERS ]];then
-    	docker rm -f $(docker ps -f name=sunchaincode --format "{{ .Names }}")
+    	docker rm -f $(docker ps -f name=chaincode --format "{{ .Names }}")
     fi
     if [[  $CHAINIMAGES ]];then
-    	docker rmi -f $(docker images *sunchaincode* -q)
+    	docker rmi -f $(docker images *chaincode* -q)
     fi
     rm -r crypto-config/ channel-artifacts/
     docker network prune -f
     docker volume prune -f
-    for i in {ec2,ec3}; do
+    for i in {node0,node1,node2,node3,node4,node6}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
@@ -137,7 +137,7 @@ function swarm-down {
     echo
     echo
 
-    for i in {ec2,ec3}; do
+    for i in {node0,node1,node2,node3,node4,node6}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
