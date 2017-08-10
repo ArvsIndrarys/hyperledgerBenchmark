@@ -125,7 +125,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	case "Transaction":
 		index1 := args[0]
 		index2 := args[1]
-		value, err := strconv.Atoi(args[3])
+		value, err := strconv.Atoi(args[2])
 		if err != nil {
 			return shim.Error(err.Error())
 		}
