@@ -32,4 +32,3 @@ function generateChannelArtifacts() {
 
 generateCerts
 generateChannelArtifacts
-
