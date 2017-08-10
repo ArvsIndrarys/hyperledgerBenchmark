@@ -20,7 +20,7 @@ function swarm-up {
     sed -i '1,4d' ./joinCommand && sed -i '4,7d' ./joinCommand
     chmod a+x ./joinCommand
 
-    for i in {node0,node1,node2,node3,node4,node6}; do
+    for i in {node0,node1,node2,node3,node4}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -31,11 +31,10 @@ function swarm-up {
      	echo "$?  - $i is down"
     fi
     done
-    rm ./joinCommand
-
+	rm ./joinCommand
 }
 
-function init {
+function up {
     
     echo
     echo
@@ -49,7 +48,7 @@ function init {
     echo
 
     ./generateArtifacts.sh
-    for i in {node0,node1,node2,node3,node4,node6}; do
+    for i in {node0,node1,node2,node3,node4}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -61,29 +60,28 @@ function init {
     done
 
     echo "------------- Deploying hyperledger ------------"
-    docker network create --driver=overlay --attachable hyper_default
-    docker stack deploy -c docker-compose.yaml hyper 	
+    docker network create --driver=overlay --attachable hyperledgerBenchmark_default
+    docker stack deploy -c docker-compose.yaml hyperledgerBenchmark 	
     sleep 1
-    docker exec -it $(docker ps -f name=hyper_cli --format "{{ .Names }}") './script/script.sh'
-    docker service rm hyper_cli 
+    docker exec -it $(docker ps -f name=hyperledgerBenchmark_cli --format "{{ .Names }}") './script/script.sh'
 }
 
 function start {
     echo "------------- Deploying hyperledger ------------"
-    docker network create --driver=overlay --attachable hyper_default
-    docker stack deploy -c docker-compose.yaml hyper
+    docker network create --driver=overlay --attachable hyperledgerBenchmark_default
+    docker stack deploy -c docker-compose.yaml hyperledgerBenchmark
     sleep 1
-    docker exec -it $(docker ps -f name=hyper_cli --format "{{ .Names }}") './script/script.sh' 
-    docker service rm hyper_cli 
+    docker exec -it $(docker ps -f name=hyperledgerBenchmark_cli --format "{{ .Names }}") './script/script.sh' 
 }
 
 function stop {
     echo "------------ Stopping hyperledger --------------"
-    docker service rm hyper_peer0 hyper_orderer 
+    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
     CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
     echo $CHAINCONTAINERS
     CHAINIMAGES=$(docker images *chaincode* -q)
-    echo $CHAINIMAGES
+    echo "images :"
+	echo $CHAINIMAGES
     if [[ $CHAINCONTAINERS ]];then
     	docker rm -f $(docker ps -f name=chaincode --format "{{ .Names }}")
     fi
@@ -104,7 +102,7 @@ function terminate {
     echo
     echo
 
-    docker service rm hyper_peer0 hyper_orderer 
+    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
     CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
     echo $CHAINCONTAINERS
     CHAINIMAGES=$(docker images *chaincode* -q)
@@ -118,7 +116,7 @@ function terminate {
     rm -r crypto-config/ channel-artifacts/
     docker network prune -f
     docker volume prune -f
-    for i in {node0,node1,node2,node3,node4,node6}; do
+    for i in {node0,node1,node2,node3,node4};do 
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
@@ -137,7 +135,7 @@ function swarm-down {
     echo
     echo
 
-    for i in {node0,node1,node2,node3,node4,node6}; do
+    for i in {node0,node1,node2,node3,node4}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
@@ -152,7 +150,7 @@ function swarm-down {
 if [ "$COMMAND" = 'swarm-up' ];then
 	swarm-up
 elif [ "$COMMAND" = 'up' ];then
-	init
+	up
 elif [ "$COMMAND" = 'start' ];then
 	start
 elif [ "$COMMAND" = 'stop' ];then
