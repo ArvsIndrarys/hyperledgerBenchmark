@@ -105,8 +105,8 @@ func Transaction(stub shim.ChaincodeStubInterface, index1 string, index2 string,
 		return shim.Error("0_4_1 " + err.Error())
 	}
 	response := index1 + ": " + strconv.Itoa(val1) + " and " + index2 + ": " + strconv.Itoa(val2)
-	fmt.Printf("    %s", response)
-	fmt.Printf("    END TRANSACTION")
+	log.Printf("    %s", response)
+	log.Printf("    END TRANSACTION")
 	return shim.Success([]byte(response))
 }
 
@@ -142,6 +142,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
-		fmt.Printf("O_S_0 Error starting Simple chaincode: %s", err)
+		log.Printf("O_S_0 Error starting Simple chaincode: %s", err)
 	}
 }
