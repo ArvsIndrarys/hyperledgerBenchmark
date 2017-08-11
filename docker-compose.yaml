@@ -1,10 +1,7 @@
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
 version: '3.2'
 
 services:
+
   orderer:
     image: hyperledger/fabric-orderer:x86_64-1.0.0
     environment:
@@ -323,7 +320,7 @@ services:
         - ./chaincode:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
-        - ./script/scrpt.sh:/opt/gopath/src/github.com/hyperledger/fabric/peer/script
+        - ./script/cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/script
     depends_on:
       - orderer
       - peer0org1
