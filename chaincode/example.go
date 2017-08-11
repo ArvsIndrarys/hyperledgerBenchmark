@@ -58,7 +58,7 @@ func add(stub shim.ChaincodeStubInterface, index string, value int) (int, error)
 		return 0, fmt.Errorf("0_2_1 Couldn't set the value to int : %s", err)
 	}
 	newA := value + aInt
-	if err := stub.PutState("a", []byte(strconv.Itoa(newA))); err != nil {
+	if err := stub.PutState(index, []byte(strconv.Itoa(newA))); err != nil {
 		return 0, fmt.Errorf("0_2_2 Couldn't put the value into the new state : %s", err)
 	}
 	log.Printf("       Value of the index after modification : %d", newA)
