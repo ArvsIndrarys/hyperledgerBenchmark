@@ -74,6 +74,12 @@ peer channel join -b mychannel.block
 peer chaincode install -n chaincode -v 1.0 -p github.com/hyperledger/fabric/peer/chaincode
 peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt -C $CHANNEL_NAME -n chaincode -v 1.0  -c '{"Args":["init","a","100","b","100"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
 
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","ubuntu", "100000"]}'
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node0", "100000"]}'
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node1", "100000"]}'
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node2", "100000"]}'
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node3", "100000"]}'
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node4", "100000"]}'
 channelJoin
 
 echo "===================================================================="
