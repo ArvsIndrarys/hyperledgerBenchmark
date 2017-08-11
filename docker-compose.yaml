@@ -323,7 +323,7 @@ services:
         - ./chaincode:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
-        - ./script:/opt/gopath/src/github.com/hyperledger/fabric/peer/script
+        - ./script/scrpt.sh:/opt/gopath/src/github.com/hyperledger/fabric/peer/script
     depends_on:
       - orderer
       - peer0org1

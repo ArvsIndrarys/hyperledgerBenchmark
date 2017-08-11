@@ -20,7 +20,7 @@ function swarm-up {
     sed -i '1,4d' ./joinCommand && sed -i '4,7d' ./joinCommand
     chmod a+x ./joinCommand
 
-    for i in {node0,node1,node2,node3,node4}; do
+    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -39,7 +39,7 @@ function up {
     echo
     echo
     echo "================================================"
-    echo "============= Initializing nodes ==============="
+    echo "============= Initializing nodehs ==============="
     echo "================================================"
     echo
     echo
@@ -48,7 +48,7 @@ function up {
     echo
 
     ./generateArtifacts.sh
-    for i in {node0,node1,node2,node3,node4}; do
+    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -94,7 +94,7 @@ function stop {
 
 function terminate {
     echo "================================================"
-    echo "============ Terminating nodes ================="
+    echo "============ Terminating nodehs ================="
     echo "================================================"
     echo
     echo
@@ -116,7 +116,7 @@ function terminate {
     rm -r crypto-config/ channel-artifacts/
     docker network prune -f
     docker volume prune -f
-    for i in {node0,node1,node2,node3,node4};do 
+    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4};do 
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
@@ -135,7 +135,7 @@ function swarm-down {
     echo
     echo
 
-    for i in {node0,node1,node2,node3,node4}; do
+    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
