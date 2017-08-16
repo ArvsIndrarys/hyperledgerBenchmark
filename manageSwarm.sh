@@ -20,7 +20,7 @@ function swarm-up {
     sed -i '1,4d' ./joinCommand && sed -i '4,7d' ./joinCommand
     chmod a+x ./joinCommand
 
-    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4}; do
+    for i in {node0,node1,node2,node3,node4,node6}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -39,7 +39,7 @@ function up {
     echo
     echo
     echo "================================================"
-    echo "============= Initializing nodehs ==============="
+    echo "============= Initializing nodes ==============="
     echo "================================================"
     echo
     echo
@@ -48,7 +48,7 @@ function up {
     echo
 
     ./generateArtifacts.sh
-    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4}; do
+    for i in {node0,node1,node2,node3,node4,node6}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
             echo "$i is up"
@@ -77,24 +77,23 @@ function start {
 function stop {
     echo "------------ Stopping hyperledger --------------"
     docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
-    CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
-    echo $CHAINCONTAINERS
-    CHAINIMAGES=$(docker images *chaincode* -q)
-    echo "images :"
-	echo $CHAINIMAGES
-    if [[ $CHAINCONTAINERS ]];then
-    	docker rm -f $(docker ps -f name=chaincode --format "{{ .Names }}")
+	docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)
+    for i in {node0,node1,node2,node3,node4,node6};do 
+    ssh -q "$i" exit
+    if [ "$?" = '0' ];then
+        echo "$i is up"
+		ssh "$i" 'docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)'
+    else
+        echo "$? - $i is down"
     fi
-    if [[  $CHAINIMAGES ]];then
-    	docker rmi -f $(docker images *chaincode* -q)
-    fi
+	done
     docker network prune -f
     docker volume prune -f
 }
 
 function terminate {
     echo "================================================"
-    echo "============ Terminating nodehs ================="
+    echo "============ Terminating nodes ================="
     echo "================================================"
     echo
     echo
@@ -135,7 +134,7 @@ function swarm-down {
     echo
     echo
 
-    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4}; do
+    for i in {node0,node1,node2,node3,node4,node6}; do
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"

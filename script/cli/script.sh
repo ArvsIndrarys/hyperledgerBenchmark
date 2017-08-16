@@ -20,13 +20,13 @@ function channelJoin {
 	peer channel join -b mychannel.block
 	peer chaincode install -n chaincode -v 1.0 -p github.com/hyperledger/fabric/peer/chaincode
 
-#	echo "----------------- peer2org1 -----------------"
-#	CORE_PEER_ADDRESS=peer2.org1.example.com:7051
-#	CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls/server.crt
-#	CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls/server.key
-#	CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls/ca.crt
-#	peer channel join -b mychannel.block
-#	peer chaincode install -n chaincode -v 1.0 -p github.com/hyperledger/fabric/peer/chaincode
+	echo "----------------- peer2org1 -----------------"
+	CORE_PEER_ADDRESS=peer2.org1.example.com:7051
+	CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls/server.crt
+	CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls/server.key
+	CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls/ca.crt
+	peer channel join -b mychannel.block
+	peer chaincode install -n chaincode -v 1.0 -p github.com/hyperledger/fabric/peer/chaincode
 	
 	echo "----------------- peer0org2 -----------------"
 	CORE_PEER_LOCALMSPID=Org2MSP
@@ -83,6 +83,7 @@ peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /opt/gopat
 peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node2", "100000"]}'
 peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node3", "100000"]}'
 peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node4", "100000"]}'
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt  -C mychannel -n chaincode -v 1.0  -c '{"Args":["Set","node6", "100000"]}'
 sleep 1
 
 channelJoin
