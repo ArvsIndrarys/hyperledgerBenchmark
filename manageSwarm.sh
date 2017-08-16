@@ -76,7 +76,7 @@ function start {
 
 function stop {
     echo "------------ Stopping hyperledger --------------"
-    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
+    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer2org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
 	docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)
     for i in {node0,node1,node2,node3,node4,node6};do 
     ssh -q "$i" exit
@@ -101,7 +101,7 @@ function terminate {
     echo
     echo
 
-    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
+    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer2org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
 	docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)
     rm -r crypto-config/ channel-artifacts/
     docker network prune -f
