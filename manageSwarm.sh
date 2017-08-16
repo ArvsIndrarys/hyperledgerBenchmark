@@ -102,24 +102,16 @@ function terminate {
     echo
 
     docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
-    CHAINCONTAINERS=$(docker ps -f name=chaincode --format "{{ .Names }}")
-    echo $CHAINCONTAINERS
-    CHAINIMAGES=$(docker images *chaincode* -q)
-    echo $CHAINIMAGES
-    if [[ $CHAINCONTAINERS ]];then
-    	docker rm -f $(docker ps -f name=chaincode --format "{{ .Names }}")
-    fi
-    if [[  $CHAINIMAGES ]];then
-    	docker rmi -f $(docker images *chaincode* -q)
-    fi
+	docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)
     rm -r crypto-config/ channel-artifacts/
     docker network prune -f
     docker volume prune -f
-    for i in {nodeh0,nodeh1,nodeh2,nodeh3,nodeh4};do 
+    for i in {node0,node1,node2,node3,node4,node6};do 
     ssh -q "$i" exit
     if [ "$?" = '0' ];then
         echo "$i is up"
         ssh "$i" 'rm -r hyperledgerBenchmark/crypto-config hyperledgerBenchmark/channel-artifacts'
+		ssh "$i" 'docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)'
     else
         echo "$? - $i is down"
     fi
