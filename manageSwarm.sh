@@ -17,20 +17,20 @@ function swarm-up {
     echo
 
     docker swarm init > ./joinCommand
-    sed -i '1,4d' ./joinCommand && sed -i '4,7d' ./joinCommand
-    chmod a+x ./joinCommand
-
-    for i in {node0,node1,node2,node3,node4,node6}; do
-    ssh -q "$i" exit
-    if [ "$?" = '0' ];then
-            echo "$i is up"
-            scp ./joinCommand "$i":~
-            ssh "$i" './joinCommand'
-            ssh "$i" 'rm ./joinCommand'
-    else
-     	echo "$?  - $i is down"
-    fi
-    done
+#   sed -i '1,4d' ./joinCommand && sed -i '4,7d' ./joinCommand
+#   chmod a+x ./joinCommand
+#
+#   for i in {node0,node1,node2,node3,node4,node6}; do
+#   ssh -q "$i" exit
+#   if [ "$?" = '0' ];then
+#           echo "$i is up"
+#           scp ./joinCommand "$i":~
+#           ssh "$i" './joinCommand'
+#           ssh "$i" 'rm ./joinCommand'
+#   else
+#    	echo "$?  - $i is down"
+#   fi
+#   done
 	rm ./joinCommand
 }
 
@@ -48,16 +48,16 @@ function up {
     echo
 
     ./generateArtifacts.sh
-    for i in {node0,node1,node2,node3,node4,node6}; do
-    ssh -q "$i" exit
-    if [ "$?" = '0' ];then
-            echo "$i is up"
-            scp -r ./crypto-config "$i":~/hyperledgerBenchmark
-            scp -r ./channel-artifacts/ "$i":~/hyperledgerBenchmark
-    else
-     	echo "$?  - $i is down"
-    fi
-    done
+#   for i in {node0,node1,node2,node3,node4,node6}; do
+#   ssh -q "$i" exit
+#   if [ "$?" = '0' ];then
+#           echo "$i is up"
+#           scp -r ./crypto-config "$i":~/hyperledgerBenchmark
+#           scp -r ./channel-artifacts/ "$i":~/hyperledgerBenchmark
+#   else
+#    	echo "$?  - $i is down"
+#   fi
+#   done
 
     echo "------------- Deploying hyperledger ------------"
     docker network create --driver=overlay --attachable hyperledgerBenchmark_default
@@ -76,17 +76,17 @@ function start {
 
 function stop {
     echo "------------ Stopping hyperledger --------------"
-    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer2org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
+    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer2org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer4org1 hyperledgerBenchmark_peer5org1 hyperledgerBenchmark_peer6org1 hyperledgerBenchmark_orderer 
 	docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)
-    for i in {node0,node1,node2,node3,node4,node6};do 
-    ssh -q "$i" exit
-    if [ "$?" = '0' ];then
-        echo "$i is up"
-		ssh "$i" 'docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)'
-    else
-        echo "$? - $i is down"
-    fi
-	done
+#for i in {node0,node1,node2,node3,node4,node6};do 
+#ssh -q "$i" exit
+#if [ "$?" = '0' ];then
+#    echo "$i is up"
+#	ssh "$i" 'docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)'
+#else
+#    echo "$? - $i is down"
+#fi
+#done
     docker network prune -f
     docker volume prune -f
 }
@@ -101,22 +101,21 @@ function terminate {
     echo
     echo
 
-    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer2org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer0org2 hyperledgerBenchmark_peer1org2 hyperledgerBenchmark_peer2org2 hyperledgerBenchmark_orderer 
+    docker service rm hyperledgerBenchmark_cli hyperledgerBenchmark_peer0org1 hyperledgerBenchmark_peer1org1 hyperledgerBenchmark_peer2org1 hyperledgerBenchmark_peer3org1 hyperledgerBenchmark_peer4org1 hyperledgerBenchmark_peer5org1 hyperledgerBenchmark_peer6org1 hyperledgerBenchmark_orderer 
 	docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)
     rm -r crypto-config/ channel-artifacts/
     docker network prune -f
     docker volume prune -f
-    for i in {node0,node1,node2,node3,node4,node6};do 
-    ssh -q "$i" exit
-    if [ "$?" = '0' ];then
-        echo "$i is up"
-        ssh "$i" 'rm -r hyperledgerBenchmark/crypto-config hyperledgerBenchmark/channel-artifacts'
-		ssh "$i" 'docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)'
-    else
-        echo "$? - $i is down"
-    fi
-    done
- 
+#   for i in {node0,node1,node2,node3,node4,node6};do 
+#   ssh -q "$i" exit
+#   if [ "$?" = '0' ];then
+#       echo "$i is up"
+#       ssh "$i" 'rm -r hyperledgerBenchmark/crypto-config hyperledgerBenchmark/channel-artifacts'
+#   	ssh "$i" 'docker stop $(docker ps -a -f name='dev*' -q); docker rm $(docker ps -a -f name='dev*' -q); docker rmi $(docker images -f reference='*chaincode*' -q)'
+#   else
+#       echo "$? - $i is down"
+#   fi
+#   done
 }
 
 function swarm-down {
@@ -126,15 +125,15 @@ function swarm-down {
     echo
     echo
 
-    for i in {node0,node1,node2,node3,node4,node6}; do
-    ssh -q "$i" exit
-    if [ "$?" = '0' ];then
-        echo "$i is up"
-        ssh "$i" 'docker swarm leave'
-    else
-        echo "$? - $i is down"
-    fi
-    done
+#   for i in {node0,node1,node2,node3,node4,node6}; do
+#   ssh -q "$i" exit
+#   if [ "$?" = '0' ];then
+#       echo "$i is up"
+#       ssh "$i" 'docker swarm leave'
+#   else
+#       echo "$? - $i is down"
+#   fi
+#   done
     docker swarm leave --force
 }
 
