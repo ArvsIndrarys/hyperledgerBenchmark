@@ -325,11 +325,11 @@ services:
       - orderer
       - peer0org1
       - peer1org1
-#      - peer2org1
+      - peer2org1
       - peer3org1
-      - peer0org2
-      - peer1org2
-      - peer2org2
+      - peer4org1
+      - peer5org1
+      - peer6org1
     deploy:
       placement:
         constraints:

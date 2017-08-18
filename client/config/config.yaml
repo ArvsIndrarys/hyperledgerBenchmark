@@ -1,0 +1,29 @@
+client:
+  tls:
+    enabled: true
+  network:
+    organizations:
+      peerorg1:
+        mspID: "Org1MSP"
+
+user :                                                                                                                                                                                  
+  name: user1
+  skipPersistence: true
+  keyPath: "./config/key_sk"
+  certPath: "./config/User1@org1.example.com-cert.pem"
+  statestorePath: ""
+
+peer:
+  org: peerorg1
+  baseUrl: "192.168.13.69:7051"
+  certPath: "./config/tlsca.org1.example.com-cert.pem"
+  hostname: "peer0.org1.example.com"
+  eventUrl: "192.168.13.69:7052"
+
+channelName: mychannel
+chaincodeName: chaincode
+
+orderer:
+  url: "192.168.13.69:7050"
+  certPath: "./config/ca.crt"
+  hostname: "orderer.example.com"

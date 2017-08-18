@@ -15,14 +15,12 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Org1
-                    - *Org2
     Channel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
-                - *Org2
 
 Organizations:
 
@@ -34,10 +32,6 @@ Organizations:
         Name: Org1MSP
         ID: Org1MSP
         MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
-    - &Org2
-        Name: Org2MSP
-        ID: Org2MSP
-        MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
 
 Orderer: &OrdererDefaults
     OrdererType: solo
